@@ -31,8 +31,6 @@ Here’s a simplified diagram of a process with multiple threads:
 
 ### Difference Between Threads and Processes (Using `fork` as an Example)
 
-### Updated Explanation: Threads vs. Processes in Linux
-
 Let’s explore the differences in the context of a **network server design**, where the traditional UNIX approach uses `fork()` to create multiple processes, and the threaded approach uses `pthread_create()` to create multiple threads.
 
 ---
