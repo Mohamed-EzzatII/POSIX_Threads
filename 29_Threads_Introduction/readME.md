@@ -272,14 +272,14 @@ void *thread_func1(void *name) {
 - In this case, the argument is cast to a string (`unsigned char*`) and printed.
 - The function returns `NULL` to indicate successful completion.
 
-#### Step 2: Declare a Thread Identifier
+##### Step 2: Declare a Thread Identifier
 ```c
 pthread_t thread_func1_pt;
 ```
 - `pthread_t` is a data type used to store the thread identifier.
 - `thread_func1_pt` will hold the ID of the newly created thread.
 
-#### Step 3: Create the Thread in `main()`
+##### Step 3: Create the Thread in `main()`
 ```c
 int status = pthread_create(&thread_func1_pt, NULL, thread_func1, (void *)"1");
 if (status != 0) {
@@ -294,14 +294,14 @@ if (status != 0) {
 - The fourth argument (`(void *)"1"`) is passed to the thread function as its argument.
 - If `pthread_create()` fails, it returns a non-zero value, and an error message is printed.
 
-#### Step 4: Main Thread Continues Execution
+##### Step 4: Main Thread Continues Execution
 ```c
 printf("Hello from main thread!!\n");
 ```
 - The main thread continues executing independently of the new thread.
 - This demonstrates the concurrent nature of threads.
 
-#### Step 5: Allow Time for the Thread to Finish
+##### Step 5: Allow Time for the Thread to Finish
 ```c
 sleep(1);
 ```
@@ -310,7 +310,7 @@ sleep(1);
 
 ---
 
-#### Output of the Example
+##### Output of the Example
 
 When you run the program, the output will look like this:
 
@@ -321,7 +321,7 @@ Hello from thread[1]!!
 
 ---
 
-### `pthread_exit` Library calls
+### `pthread_exit` Library call
 
 #### Syntax:
 ```c
@@ -339,7 +339,7 @@ void pthread_exit(void *retval);
   - If a thread calls `pthread_exit`, only that thread terminates, and the program continues running.
 ---
 
-### `pthread_self` Library calls
+### `pthread_self` Library call
 
 #### Syntax:
 ```c
@@ -356,7 +356,7 @@ pthread_t pthread_self(void);
 
 ---
 
-### `pthread_join` Library calls
+### `pthread_join` Library call
 
 #### Syntax:
 ```c
@@ -373,7 +373,7 @@ int pthread_join(pthread_t thread, void **retval);
 
 ---
 
-### `pthread_equal` Library calls
+### `pthread_equal` Library call
 
 #### Syntax:
 ```c
@@ -394,7 +394,7 @@ int pthread_equal(pthread_t t1, pthread_t t2);
 - **Safety**: Using `pthread_equal` avoids undefined behavior that could occur if `pthread_t` is not a primitive type.
 
 ---
-### `pthread_detach` Library calls  
+### `pthread_detach` Library call  
 
 #### Syntax:  
 ```c
