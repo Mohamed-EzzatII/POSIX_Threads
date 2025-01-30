@@ -1,3 +1,16 @@
+# Chapter 29 : Introduction To Threads
+
+## Chapter Content:
+1. Overview
+2. Background Details of the Pthreads API
+3. Thread Creation
+4. Thread Termination
+5. Thread IDs
+6. Joining with a Terminated Thread
+7. Detaching a Thread
+8. Thread Attributes
+9. Threads Versus Processes 
+
 ## What is a Thread?
 
 A **thread** is the smallest unit of execution within a process. It is a sequence of instructions that can be executed independently by a CPU. Threads share the same memory space and resources of the process they belong to, which makes them lightweight compared to processes. Multiple threads within a process can run concurrently, enabling parallel execution and efficient resource utilization.
