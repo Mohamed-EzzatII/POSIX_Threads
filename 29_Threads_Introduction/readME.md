@@ -1,4 +1,4 @@
-### What is a Thread?
+## What is a Thread?
 
 A **thread** is the smallest unit of execution within a process. It is a sequence of instructions that can be executed independently by a CPU. Threads share the same memory space and resources of the process they belong to, which makes them lightweight compared to processes. Multiple threads within a process can run concurrently, enabling parallel execution and efficient resource utilization.
 
@@ -6,7 +6,7 @@ In Linux, threads are implemented using the **POSIX threads (pthreads)** API, wh
 
 ---
 
-### Memory Representation of a Thread Inside a Process
+## Memory Representation of a Thread Inside a Process
 
 When a process is created, it has a single thread of execution, often called the **main thread**. When additional threads are created, they share the same memory space as the main thread but have their own independent execution context. Here's how threads are represented in memory:
 
@@ -29,13 +29,13 @@ Here’s a simplified diagram of a process with multiple threads:
 
 ---
 
-### Difference Between Threads and Processes (Using `fork` as an Example)
+## Difference Between Threads and Processes (Using `fork` as an Example)
 
 Let’s explore the differences in the context of a **network server design**, where the traditional UNIX approach uses `fork()` to create multiple processes, and the threaded approach uses `pthread_create()` to create multiple threads.
 
 ---
 
-### Traditional UNIX Approach: Multiple Processes with `fork()`
+## Traditional UNIX Approach: Multiple Processes with `fork()`
 
 In the traditional UNIX model, a network server might use a **parent process** to accept incoming client connections and then create a **child process** for each client using `fork()`. Here’s how it works:
 
@@ -47,7 +47,7 @@ In the traditional UNIX model, a network server might use a **parent process** t
    - Handles communication with the client.
    - Runs independently of the parent process and other child processes.
 
-#### Limitations of the `fork()` Approach:
+### Limitations of the `fork()` Approach:
 1. **Difficulty in Sharing Information**:
    - Processes created with `fork()` do not share memory (except for the read-only text segment).
    - To exchange data between processes, **interprocess communication (IPC)** mechanisms like pipes, shared memory, or message queues must be used. This adds complexity and overhead.
@@ -58,7 +58,7 @@ In the traditional UNIX model, a network server might use a **parent process** t
 
 ---
 
-### Threaded Approach: Multiple Threads with `pthread_create()`
+## Threaded Approach: Multiple Threads with `pthread_create()`
 
 Threads address the limitations of the `fork()` approach by providing a lightweight alternative for achieving concurrency. In a threaded network server:
 
@@ -70,7 +70,7 @@ Threads address the limitations of the `fork()` approach by providing a lightwei
    - Handles communication with the client.
    - Shares the same memory space as the main thread and other worker threads.
 
-#### Advantages of the Threaded Approach:
+### Advantages of the Threaded Approach:
 1. **Easy and Fast Information Sharing**:
    - Threads share the same memory space, including global variables and the heap. This makes it easy to share data between threads by simply copying data into shared variables.
    - However, proper **synchronization mechanisms** (e.g., mutexes, semaphores) must be used to avoid race conditions when multiple threads access shared data concurrently.
@@ -81,7 +81,7 @@ Threads address the limitations of the `fork()` approach by providing a lightwei
 
 ---
 
-### Shared Attributes Between Threads
+## Shared Attributes Between Threads
 
 Threads within the same process share the following attributes:
 
@@ -108,7 +108,7 @@ Threads within the same process share the following attributes:
 
 ---
 
-### Thread-Specific Attributes
+## Thread-Specific Attributes
 
 Each thread has its own private attributes, which are not shared with other threads:
 
@@ -144,23 +144,23 @@ Each thread has its own private attributes, which are not shared with other thre
 
 ---
 
-### Threads and `errno`
+## Threads and `errno`
 
 In traditional UNIX systems, `errno` is a global integer variable used to report errors from system calls and library functions. However, this approach doesn't work well in multithreaded programs because multiple threads could simultaneously modify and read the global `errno`, leading to **race conditions** and incorrect error reporting.
 
-#### Problem with Global `errno` in Threads:
+### Problem with Global `errno` in Threads:
 - If multiple threads make system calls or library functions that set `errno`, they could overwrite each other's error values.
 - For example:
   - Thread A makes a system call that fails and sets `errno`.
   - Before Thread A checks `errno`, Thread B makes another system call that overwrites `errno`.
   - Thread A now reads the wrong error value, leading to incorrect behavior.
 
-#### Solution: Thread-Specific `errno`
+### Solution: Thread-Specific `errno`
 To address this issue, in threaded programs, each thread has its own **thread-specific `errno`**. This ensures that:
 - Each thread's `errno` is independent of other threads.
 - There is no risk of race conditions when multiple threads make system calls or library functions.
 
-#### Implementation:
+### Implementation:
 - On Linux and most UNIX systems, `errno` is defined as a **macro** that expands into a function call returning a **modifiable lvalue** (a value that can be assigned to). This lvalue is unique for each thread.
 - For example:
   ```c
@@ -168,7 +168,7 @@ To address this issue, in threaded programs, each thread has its own **thread-sp
   ```
   Here, `__errno_location()` is a function that returns a pointer to the thread-specific `errno` variable.
 
-#### Key Points:
+### Key Points:
 1. **Thread-Specific Storage**:
    - Each thread has its own `errno` variable stored in its **thread-local storage (TLS)**.
    - This ensures that modifications to `errno` by one thread do not affect other threads.
@@ -179,9 +179,9 @@ To address this issue, in threaded programs, each thread has its own **thread-sp
 
 ---
 
-### Creation of Threads (pthreads)
+## Creation of Threads (pthreads)
 
-#### How to Create a Thread
+### How to Create a Thread
 
 To create a thread in Linux, you use the `pthread_create()` function from the `pthread` library. This function allows you to:
 - Define a function that the thread will execute.
@@ -194,7 +194,7 @@ Once created, the thread runs concurrently with the main thread and other thread
 int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine)(void *), void *arg);
 ```
 
-##### Parameters:
+#### Parameters:
 1. **`pthread_t *thread`**:
    - A pointer to a `pthread_t` variable where the thread ID will be stored.
    - This is an **output parameter**.
@@ -215,13 +215,13 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_
    - This allows passing data to the thread.
    - Example: `(void *)"1"` (passing a string as an argument).
 
-##### Return Value:
+#### Return Value:
 - Returns `0` on success.
 - Returns an error code on failure (e.g., `EAGAIN` if system resources are exhausted).
 
 ---
 
-#### Example Code
+### Example Code
 
 ```c
 #include <pthread.h>
@@ -256,11 +256,11 @@ int main() {
 ```
 ---
 
-#### Code Explanation
+### Code Explanation
 
 Let’s break down the code step by step:
 
-##### Step 1: Define the Thread Function
+#### Step 1: Define the Thread Function
 ```c
 void *thread_func1(void *name) {
     printf("Hello from thread[%s]!!\n", (unsigned char *)name);
@@ -272,14 +272,14 @@ void *thread_func1(void *name) {
 - In this case, the argument is cast to a string (`unsigned char*`) and printed.
 - The function returns `NULL` to indicate successful completion.
 
-##### Step 2: Declare a Thread Identifier
+#### Step 2: Declare a Thread Identifier
 ```c
 pthread_t thread_func1_pt;
 ```
 - `pthread_t` is a data type used to store the thread identifier.
 - `thread_func1_pt` will hold the ID of the newly created thread.
 
-##### Step 3: Create the Thread in `main()`
+#### Step 3: Create the Thread in `main()`
 ```c
 int status = pthread_create(&thread_func1_pt, NULL, thread_func1, (void *)"1");
 if (status != 0) {
@@ -294,14 +294,14 @@ if (status != 0) {
 - The fourth argument (`(void *)"1"`) is passed to the thread function as its argument.
 - If `pthread_create()` fails, it returns a non-zero value, and an error message is printed.
 
-##### Step 4: Main Thread Continues Execution
+#### Step 4: Main Thread Continues Execution
 ```c
 printf("Hello from main thread!!\n");
 ```
 - The main thread continues executing independently of the new thread.
 - This demonstrates the concurrent nature of threads.
 
-##### Step 5: Allow Time for the Thread to Finish
+#### Step 5: Allow Time for the Thread to Finish
 ```c
 sleep(1);
 ```
@@ -310,7 +310,7 @@ sleep(1);
 
 ---
 
-##### Output of the Example
+#### Output of the Example
 
 When you run the program, the output will look like this:
 
@@ -321,17 +321,17 @@ Hello from thread[1]!!
 
 ---
 
-### `pthread_exit` Library call
+## `pthread_exit` Library call
 
-#### Syntax:
+### Syntax:
 ```c
 void pthread_exit(void *retval);
 ```
 
-#### Purpose:
+### Purpose:
 - Terminates the calling thread and returns a value (`retval`) that can be retrieved by another thread using `pthread_join`.
 
-#### Key Points:
+### Key Points:
 - **Thread Termination**: When a thread calls `pthread_exit`, it terminates itself without affecting other threads in the program.
 - **Return Value**: The `retval` parameter is a pointer to a value that the thread wants to return. This value can be retrieved by another thread using `pthread_join`.
 - **Difference from `return` or `exit`**:
@@ -339,83 +339,83 @@ void pthread_exit(void *retval);
   - If a thread calls `pthread_exit`, only that thread terminates, and the program continues running.
 ---
 
-### `pthread_self` Library call
+## `pthread_self` Library call
 
-#### Syntax:
+### Syntax:
 ```c
 pthread_t pthread_self(void);
 ```
 
-#### Purpose:
+### Purpose:
 - Returns the thread ID of the calling thread.
 
-#### Key Points:
+### Key Points:
 - **Thread Identification**: Each thread has a unique identifier of type `pthread_t`.
 - **Use Case**: This function is useful when a thread needs to know its own ID, for example, for logging or debugging purposes.
 
 
 ---
 
-### `pthread_join` Library call
+## `pthread_join` Library call
 
-#### Syntax:
+### Syntax:
 ```c
 int pthread_join(pthread_t thread, void **retval);
 ```
 
-#### Purpose:
+### Purpose:
 - Waits for a specific thread to terminate and retrieves its return value.
 
-#### Key Points:
+### Key Points:
 - **Thread Synchronization**: `pthread_join` blocks the calling thread until the specified thread (`thread`) terminates.
 - **Return Value**: If `retval` is not `NULL`, the return value of the terminated thread is stored in `*retval`.
 - **Use Case**: This function is used to ensure that a thread has completed its execution before proceeding further.
 
 ---
 
-### `pthread_equal` Library call
+## `pthread_equal` Library call
 
-#### Syntax:
+### Syntax:
 ```c
 int pthread_equal(pthread_t t1, pthread_t t2);
 ```
 
-#### Purpose:
+### Purpose:
 - Compares two thread IDs to check if they are equal.
 
-#### Key Points:
+### Key Points:
 - **Thread ID Comparison**: `pthread_t` is an opaque data type, meaning its internal structure is not exposed. You cannot directly compare two `pthread_t` values using `==`.
 - **Use Case**: This function is used to compare thread IDs safely and portably.
 
-#### Why Use `pthread_equal` Instead of `==`?
+### Why Use `pthread_equal` Instead of `==`?
 
 - **Opaque Data Type**: The `pthread_t` type is implementation-defined and may not be a simple integer or pointer. Using `==` to compare `pthread_t` values is not portable and may lead to incorrect results.
 - **Portability**: `pthread_equal` is a standardized function that works across all POSIX-compliant systems, ensuring consistent behavior.
 - **Safety**: Using `pthread_equal` avoids undefined behavior that could occur if `pthread_t` is not a primitive type.
 
 ---
-### `pthread_detach` Library call  
+## `pthread_detach` Library call  
 
-#### Syntax:  
+### Syntax:  
 ```c
 int pthread_detach(pthread_t thread);
 ```  
 
-#### Purpose:  
+### Purpose:  
 - **Detaches a thread**, allowing it to release its resources automatically upon termination.  
 
-#### Key Points:  
+### Key Points:  
 - **Detached State**: A detached thread **cannot be joined** using `pthread_join`. It cleans up after itself when it finishes execution.  
 - **Resource Management**: When a detached thread terminates, its resources (stack, thread descriptor) are immediately reclaimed by the system, preventing memory leaks.  
 - **Use Case**: Useful when a thread's termination **does not need to be synchronized** with the main program. For example, in background worker threads that should run independently.  
 
 ---
-### Attributes passed to the Threads:
+## Attributes passed to the Threads:
 
 - We can give the thread when creating it the attributes to configure it(like stack size - scheduling policy ) or leaving it as NULL so the thread will be configured with the default attributes which changes from an architecture to another. 
 - We can specify the attributes given to the thread when calling `pthread_create()`.
 
-#### Steps to specify The attributes
+### Steps to specify The attributes
 - We Specify the attributes by using the following sequence:
    1. Create an attribute structure.
    2. Initialize that structure using `pthread_attr_init()` Library Call.
@@ -423,10 +423,11 @@ int pthread_detach(pthread_t thread);
    4. create the thread with the configured structure.
    5. destroy the attribute structure using `pthread_attr_destroy()` Library Call which won't affect the created thread.
 
-#### Attributes Available
+
+### Attributes Available
 There are a lot of useful attributes which we can configure you can find them by typing `man 3 pthread_attr` and add double tab, it will show all the Library Calls which are related to the attributes of `pthread`. i will talk about 3 of them which are:
 
-##### 1. Stack Configuration
+#### 1. Stack Configuration
 We can configure the `stack start address` & `stack size`using the following library calls.
    1. `pthread_attr_setstack()`: Set the stack start address and size.
    2. `pthread_attr_setstackaddr()`: Set the stack start address only.
@@ -435,19 +436,19 @@ We can configure the `stack start address` & `stack size`using the following lib
    5. `pthread_attr_getstackaddr()`: get the stack start address only.
    6. `pthread_attr_getstacksize()` : get the stack size.
 
-##### 2. Scheduling Policy
+#### 2. Scheduling Policy
 Defines the scheduling algorithm(see `man 7 sched` and search for `SCHED_FIFO` in it).
 We can configure it and get the configurations using the following Library Calls.
    1. `pthread_attr_getschedpolicy()`
    2. `pthread_attr_setschedpolicy()`
 
-##### 3. scheduling parameter
+#### 3. scheduling parameter
 specifies the priority of the thread inside the `sched_param` structure passed to the `pthread_attr_setschedparam()` Library Call, as it contains only one parameter which is `sched_priority`.
 We can configure it and get the configurations using the following Library Calls.
    1. `pthread_attr_getschedparam()`
    2. `pthread_attr_setschedparam()`
 
-#### Example:
+### Example:
 This Example is copied from the book as it is :).
 ```c
 pthread_t thr;
@@ -473,7 +474,7 @@ if (s != 0)
 
 
 ---
-#### Threads VS Processes:
+### Threads VS Processes:
 
 ---
 
@@ -493,7 +494,7 @@ if (s != 0)
 
 ---
 
-#### When to Use Threads vs. Processes
+### When to Use Threads vs. Processes
 
 | **Use Threads When**                                                                 | **Use Processes When**                                                                 |
 |--------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
