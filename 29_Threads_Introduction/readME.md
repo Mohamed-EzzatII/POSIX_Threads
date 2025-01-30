@@ -441,7 +441,7 @@ We can configure it and get the configurations using the following Library Calls
    1. `pthread_attr_getschedpolicy()`
    2. `pthread_attr_setschedpolicy()`
 
-#### 3. scheduling parameter
+##### 3. scheduling parameter
 specifies the priority of the thread inside the `sched_param` structure passed to the `pthread_attr_setschedparam()` Library Call, as it contains only one parameter which is `sched_priority`.
 We can configure it and get the configurations using the following Library Calls.
    1. `pthread_attr_getschedparam()`
